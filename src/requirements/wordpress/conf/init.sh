@@ -29,7 +29,7 @@ add_group()
 
 client_wp_download()
 {
-	$volume=$1
+	volume=$1
 	echo "location"
 	pwd
 	echo "location end"
@@ -43,10 +43,50 @@ client_wp_download()
 		echo "wp-cli Instaled!"
 	fi
 }
+#mirar detalladament esto que hay una manera mejor de hacerlo
+configure_wp()
+{
+		php_version=$1
+		volume=$2
+	
+WP="php$php_version -d memory_limit=256M /usr/local/bin/wp --path=$volume"	
+	echo $WP
+	user_password_file=/run/secrets/db_password	
+	admin_password_file=/run/secrets/db_root_password
+	
+	if ! $WP core is-installed; then
+	echo "Creating Worpress tables"
+	$WP core install --path=$volume     						\
+		--url="${DOMAIN_NAME}" 									\
+		--title="${WP_TITLE}"  									\
+		--admin_user="${WP_DB_ADMIN}"  							\
+		--admin_password="$(cat $admin_password_file)" 			\
+		--admin_email="${WP_DB_ADMIN}@dev.com"					\
+		--skip-email											\
+		--allow-root
+	fi 
+	if ! $WP user get ${WP_DB_USER} --field=ID --quiet; then
+		echo "Creating ${WP_DB_USER} user"
+		$WP user create --path=$volume								\
+		"${WP_DB_USER}" "${WP_DB_USER}@dev.com" 				\
+		--role=author 											\
+		--user_pass="$(cat $user_password_file)" 				\
+		--allow-root
+	fi
+	echo "Worpdress Configured!"
+
+
+}
+
 
 configure_php()
 {
+	volume_path=$1
+
 	echo "config doing"
+	if [ -f /appWordpress/wp-config.php ]; then
+		mv /appWordpress/wp-config.php $volume_path/
+	fi
 }
 
 
@@ -74,14 +114,15 @@ inti_wordpress()
 		wp_download "$volume"
 		client_wp_download "$volume"
 		#redis_dowlload
-		configure_php "${PHP_VER}"
-		configure_wp  "${PHP_VER}" "$volume"
+		configure_php "${PHP_VER}" "$volume"
+#		configure_wp  "${PHP_VER}" "$volume"
+		exec php-fpm${PHP_VER} -F
 }
 
 
 
 
-if [ "$1" -eq "php" ] ; then
+if [ "$1" = "php" ] ; then
 	echo  "entro al sh"	
 	init_wordpress
 else 

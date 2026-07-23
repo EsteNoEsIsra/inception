@@ -22,12 +22,14 @@ RUN apk update && \
 		php${PHP_VERSION}-cli \
 		php${PHP_VERSION}-zlib 
 
-#COPY /config/www.conf /etc/php${PHP_VERSION}/php-fpm.d/www.conf
-COPY /conf/www.conf /appWordpress/www.conf
+COPY /conf/www.conf /etc/php${PHP_VERSION}/php-fpm.d/www.conf
+#COPY /conf/www.conf /appWordpress/www.conf
+COPY --chmod=644 /tools/wp-config.php /appWordpress/wp-config.php
+
 
 COPY --chmod=755 /conf/init.sh /appWordpress/init.sh
 
 
-#ENTRYPOINT ["./init.sh"]
+ENTRYPOINT ["/appWordpress/init.sh"]
 EXPOSE ${WPRESS_PORT}
 CMD ["php-fpm"]
