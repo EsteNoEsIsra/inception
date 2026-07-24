@@ -3,6 +3,8 @@ FROM alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695
 WORKDIR /appWordpress
 
 ARG PHP_VERSION=84
+ENV PHP_VERSION=${PHP_VERSION}
+
 ARG WPRESS_PORT=9000
 
 RUN apk update && \
@@ -32,4 +34,4 @@ COPY --chmod=755 /conf/init.sh /appWordpress/init.sh
 
 ENTRYPOINT ["/appWordpress/init.sh"]
 EXPOSE ${WPRESS_PORT}
-CMD ["php-fpm"]
+CMD ["php84"]

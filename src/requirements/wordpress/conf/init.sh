@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+PHP_VER=84
 
 conneciting_db()
 {
@@ -122,10 +123,11 @@ inti_wordpress()
 
 
 
-if [ "$1" = "php" ] ; then
+if [ "$1" = "php${PHP_VER}" ] ; then
 	echo  "entro al sh"	
 	init_wordpress
 else 
+	echo "php${PHP_VER}"
 	echo "no entro"
 	exec "$@"
 fi
