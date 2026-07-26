@@ -1,7 +1,7 @@
 <?php
-$userdb = "isra"
-$dbname = "mydatabase3"
-
+$userdb = "isra";
+$dbname = "mydatabase3";
+$hostname = "mariadb";
 
 $dbpass_file="/run/secrets/db_password";
 $db_password = trim(file_get_contents($dbpass_file));
@@ -9,6 +9,10 @@ if ($db_password === false)
 {
 	echo "file {$dbpass_file} not found";
 	exit;
+}
+else // test 
+{
+	$db_password = "root";
 }
 
 
@@ -42,7 +46,7 @@ define( 'DB_USER', $userdb );
 define( 'DB_PASSWORD', $db_password );
 
 /** Database hostname */
-define( 'DB_HOST', 'localhost' );
+define( 'DB_HOST', $hostname );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );

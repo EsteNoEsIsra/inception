@@ -1,7 +1,5 @@
 #!/bin/sh
-
 set -e
-PHP_VER=84
 
 conneciting_db()
 {
@@ -25,6 +23,7 @@ add_group()
 	if ! getent passwd "$user" ; then
 		adduser -S -D -H -s /sbin/nologin -g $group $user;
 	fi
+	mkdir -p "$dir"
 	chown -R $user:$group $dir
 }
 
@@ -35,11 +34,11 @@ client_wp_download()
 	pwd
 	echo "location end"
 	
-	if [ ! -f usr/local/bin/wp ]; then
-	echo "Installing wp-cli"
-	curl -L -o wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-	chmod 744 wp-cli.phar && \
-	mv wp-cli.phar /usr/local/bin/wp
+	if [ ! -f /usr/local/bin/wp ]; then
+		echo "Installing wp-cli"
+		curl -L -o wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
+		chmod 744 wp-cli.phar 
+		mv wp-cli.phar /usr/local/bin/wp
 	else
 		echo "wp-cli Instaled!"
 	fi
@@ -49,36 +48,37 @@ configure_wp()
 {
 		php_version=$1
 		volume=$2
-	
-WP="php$php_version -d memory_limit=256M /usr/local/bin/wp --path=$volume"	
-	echo $WP
+	wp() {
+		php${php_version} -d memory_limit=256M /usr/local/bin/wp "$@" --path="$volume" --allow-root
+	}	
+#WP="php$php_version -d memory_limit=256M /usr/local/bin/wp --path=$volume"	
+#	echo $WP
 	user_password_file=/run/secrets/db_password	
 	admin_password_file=/run/secrets/db_root_password
 	
-	if ! $WP core is-installed; then
-	echo "Creating Worpress tables"
-	$WP core install --path=$volume     						\
-		--url="${DOMAIN_NAME}" 									\
-		--title="${WP_TITLE}"  									\
-		--admin_user="${WP_DB_ADMIN}"  							\
-		--admin_password="$(cat $admin_password_file)" 			\
-		--admin_email="${WP_DB_ADMIN}@dev.com"					\
-		--skip-email											\
-		--allow-root
+	if ! wp core is-installed; then
+		echo "Creating Worpress tables"
+		wp core install --path=$volume     						\
+			--url="${DOMAIN_NAME}" 									\
+			--title="${WP_TITLE}"  									\
+			--admin_user="${WP_DB_ADMIN}"  							\
+			--admin_password="$(cat $admin_password_file)" 			\
+			--admin_email="${WP_DB_ADMIN}@dev.com"					\
+			--skip-email											\
+			--allow-root
 	fi 
-	if ! $WP user get ${WP_DB_USER} --field=ID --quiet; then
+	if ! wp user get ${WP_DB_USER} --field=ID --quiet; then
 		echo "Creating ${WP_DB_USER} user"
-		$WP user create --path=$volume								\
-		"${WP_DB_USER}" "${WP_DB_USER}@dev.com" 				\
-		--role=author 											\
-		--user_pass="$(cat $user_password_file)" 				\
-		--allow-root
+		wp user create --path=$volume								\
+			"${WP_DB_USER}" "${WP_DB_USER}@dev.com" 				\
+			--role=author 											\
+			--user_pass="$(cat $user_password_file)" 				\
+			--allow-root
 	fi
 	echo "Worpdress Configured!"
 
 
 }
-
 
 configure_php()
 {
@@ -89,8 +89,6 @@ configure_php()
 		mv /appWordpress/wp-config.php $volume_path/
 	fi
 }
-
-
 
 # tar -z-x-f  --strip-component = extrae aqui          
 wp_download()
@@ -106,28 +104,23 @@ wp_download()
 	echo "Wordpress downloaded"
 }
 
-
-inti_wordpress()
+init_wordpress()
 {
 		volume=/var/www/html
-		conneciting_db "mariadb" "${MARIA_DB_PORT}"
+	#	conneciting_db "mariadb" "${MARIA_DB_PORT}"
 		add_group "www-data" "www-data" "$volume"
 		wp_download "$volume"
 		client_wp_download "$volume"
 		#redis_dowlload
-		configure_php "${PHP_VER}" "$volume"
-#		configure_wp  "${PHP_VER}" "$volume"
-		exec php-fpm${PHP_VER} -F
+		configure_php "$volume"
+		configure_wp  "${PHP_VERSION}" "$volume"
+		exec php-fpm${PHP_VERSION} -F
 }
 
-
-
-
-if [ "$1" = "php${PHP_VER}" ] ; then
+if [ "$1" = "php${PHP_VERSION}" ] ; then
 	echo  "entro al sh"	
 	init_wordpress
 else 
-	echo "php${PHP_VER}"
 	echo "no entro"
 	exec "$@"
 fi
