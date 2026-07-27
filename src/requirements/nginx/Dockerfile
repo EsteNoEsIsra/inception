@@ -1,17 +1,21 @@
-FROM alpine:3.23
+FROM alpine@sha256:14358309a308569c32bdc37e2e0e9694be33a9d99e68afb0f5ff33cc1f695dce
+
+WORKDIR  /App_nginx
 
 RUN apk update && \
-		apk add --no-cache nginx openssl 
+		apk add --no-cache nginx openssl gettext 
+
 
 RUN		mkdir -p /run/nginx
 
-COPY nginx nginx.conf /etc/nginx/nginx.conf
-#		 index.html /usr/share/nginx/html/index.html
+COPY --chmod=644 /conf/nginx.conf /App_nginx/nginx.cnf.template
+COPY --chmod=774 /conf/init.sh /App_nginx/init.sh
 
+ENTRYPOINT ["/App_nginx/init.sh"]
 
-EXPOSE 80 443
+EXPOSE ${NGINX_PORT}
 
-CMD ["nginx"]
+CMD ["nginx", "-g", "daemon off;"]
 
 
 # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt

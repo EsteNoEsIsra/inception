@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb-image
+    restart: always
+    networks:
+      - inception-network
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    secrets:
+      - db_password
+      - db_root_password
+#
+  wordpress:
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    image: wordpress-image
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      - inception-network
+    volumes:
+      - wordpress-data:/var/www/html
+    secrets:
+      - db_password
+      - credentials
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    environment:
+      - NGINX_BDIR_=${NGINX_BDIR}
+      - SSL_PATH_=${SSL_PATH}
+      - NGINX_LOGDIR_=${NGINX_LOGDIR}
+      - NGINX_PORT_=${NGINX_PORT}
+      - DOMAIN_NAME_=${DOMAIN_NAME}
+    image: nginx-image
+    restart: always
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - inception-network
+    volumes:
+      - wordpress-data:/var/www/html
+
+networks:
+  inception-network:
+    driver: bridge
+
+volumes:
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/israetor/data/mariadb
+  wordpress-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/israetor/data/wordpress
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
