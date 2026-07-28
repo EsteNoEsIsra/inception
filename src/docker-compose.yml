@@ -7,7 +7,8 @@ services:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     image: mariadb-image
-    restart: unless-stopped
+ #   restart: unless-stopped
+    restart: no
     environment:
       - MYSQL_DIR=${MYSQL_DIR}
       - MARIADB_PORT=${MARIADB_PORT}
@@ -40,7 +41,9 @@ services:
       - PHP_VERSION=${PHP_VERSION}
       - WP_PREFIX=${WP_PREFIX}
     image: wordpress-image
-    restart: unless-stopped
+    #restart: unless-stopped
+    restart: no
+		
     depends_on:
       - mariadb
     networks:
@@ -51,7 +54,7 @@ services:
       - wp-data:/var/www/html
     secrets:
       - db_password
-      - credentials
+      - db_root_password
 
   nginx:
     container_name: nginx
@@ -65,7 +68,8 @@ services:
       - NGINX_PORT=${NGINX_PORT}
       - DOMAIN_NAME=${DOMAIN_NAME}
     image: nginx-image
-    restart: unless-stopped
+    #restart: unless-stopped
+    restart: no
     ports:
       - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
@@ -98,5 +102,5 @@ secrets:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
-  credentials:
-    file: ../secrets/credentials.txt
+ # credentials:
+ #   file: ../secrets/credentials.txt
