@@ -1,14 +1,6 @@
 #!/bin/bash
 
-
 set -e
-$MYSQL_DIR =/var/lib/mysql
-$MYSQL_PORT =3306
-$db_root_password=root  # eliminar .  lo dejo test  (se hace en los secrets)
-$MYSQL_DATABASE=mydatabase
-$MYSQL_USER=mysql
-$MYSQL_ROOT=root
-
 
 conf_mariadb_file()
 {
@@ -17,14 +9,11 @@ conf_mariadb_file()
 	[mysqld]
 	user=mysql
 	datadir=${MYSQL_DIR}
-	port=${MYSQL_PORT}
+	port=${MARIADB_PORT}
 	bind-address=0.0.0.0
 	socket=/run/mysqld/mysqld.sock
 EOF
 }	
-
-
-
 
 init_database()
 {
@@ -55,12 +44,12 @@ create_database_file()
 	db_root_password_file=/run/secrets/db_root_password
 
 
-if [ -f $db_password_file ] && [ -f $db_root_password_file ]; then
+	if [ -f $db_password_file ] && [ -f $db_root_password_file ]; then
 
-#	db_password=$(cat $db_password_file)
-#	db_root_password=$(cat $db_root_password_file)
-	db_password=$db_root_password
-	db_root_password=$db_root_password
+	db_password=$(cat $db_password_file)
+	db_root_password=$(cat $db_root_password_file)
+	# db_password=$db_root_password
+	# db_root_password=$db_root_password
 
 
 cat << EOF > ${MYSQL_DIR}/init-db.sql
@@ -87,15 +76,12 @@ EOF
 
 }
 
-
 init_mariadb()
 {
 	conf_mariadb_file
 	init_database
 	exec gosu mysql "$@"
 }
-
-
 
 if [ "$1" == "mysqld" ] ; then
 	init_mariadb "$@"

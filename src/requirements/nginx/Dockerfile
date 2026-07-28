@@ -4,8 +4,7 @@ WORKDIR  /App_nginx
 
 RUN apk update && \
 		apk add --no-cache nginx openssl gettext 
-
-
+		
 RUN		mkdir -p /run/nginx
 
 COPY --chmod=644 /conf/nginx.conf /App_nginx/nginx.cnf.template
@@ -13,7 +12,7 @@ COPY --chmod=774 /conf/init.sh /App_nginx/init.sh
 
 ENTRYPOINT ["/App_nginx/init.sh"]
 
-EXPOSE ${NGINX_PORT}
+#EXPOSE ${NGINX_PORT}
 
 CMD ["nginx", "-g", "daemon off;"]
 

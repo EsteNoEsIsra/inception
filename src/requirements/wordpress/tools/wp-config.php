@@ -1,7 +1,5 @@
 <?php
-$userdb = "isra";
-$dbname = "mydatabase3";
-$hostname = "mariadb";
+
 
 $dbpass_file="/run/secrets/db_password";
 $db_password = trim(file_get_contents($dbpass_file));
@@ -10,12 +8,15 @@ if ($db_password === false)
 	echo "file {$dbpass_file} not found";
 	exit;
 }
-else // test 
-{
-	$db_password = "root";
-}
-
-
+// else // test 
+// {
+// 	$db_password = "root";
+// }
+'utf8mb4'
+$userdb = getenv('WP_DB_USER');
+$dbname = getenv('WP_DB');
+$hostname = getenv('WP_HOST');
+$metacharset = getenv('WP_CHARSET');
 /**
  * The base configuration for WordPress
  *
@@ -49,7 +50,7 @@ define( 'DB_PASSWORD', $db_password );
 define( 'DB_HOST', $hostname );
 
 /** Database charset to use in creating database tables. */
-define( 'DB_CHARSET', 'utf8mb4' );
+define( 'DB_CHARSET', $metacharset );
 
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
@@ -77,7 +78,13 @@ define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
 */
 /**#@-*/
-
+/*
+//Redis Bonus
+define('WP_REDIS_HOST', 'redis');
+define('WP_REDIS_PORT', 6379);
+define('WP_CACHE', true);
+define('WP_REDIS_DISABLED', false);
+*/
 /**
  * WordPress database table prefix.
  *
@@ -90,7 +97,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
  *
  * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#table-prefix
  */
-$table_prefix = 'wp_';
+$table_prefix = getenv('WP_PREFIX');
 
 /**
  * For developers: WordPress debugging mode.
@@ -104,7 +111,7 @@ $table_prefix = 'wp_';
  *
  * @link https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/
  */
-define( 'WP_DEBUG', false );
+define( 'WP_DEBUG', true );
 
 /* Add any custom values between this line and the "stop editing" line. */
 
