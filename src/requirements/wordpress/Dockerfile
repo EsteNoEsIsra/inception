@@ -7,6 +7,7 @@ ARG PHP_VERSION
 RUN apk update && \
 		apk add --no-cache \
 		curl \
+		netcat-openbsd \
 		php${PHP_VERSION} \
 		php${PHP_VERSION}-fpm \
 		php${PHP_VERSION}-mysqli \
@@ -31,4 +32,5 @@ COPY --chmod=755 /conf/init.sh /appWordpress/init.sh
 
 ENTRYPOINT ["/appWordpress/init.sh"]
 #EXPOSE ${WP_PORT}
-CMD ["php84"]
+#CMD ["php84"]
+CMD ["php-fpm${PHP_VERSION}","-F"]

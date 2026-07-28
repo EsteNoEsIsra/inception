@@ -39,8 +39,9 @@ start_templates()
 
 init_nginx()
 {
-	add_group "nginx" "nginx" "var/www/html"
+	add_group "nginx" "nginx" "/var/www/html"
 	generate_ssl_cert
+	ls -l "$SSL_PATH" # log
 	start_templates
 	exec "$@"
 }

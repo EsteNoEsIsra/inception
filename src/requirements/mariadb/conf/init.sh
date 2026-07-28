@@ -5,7 +5,7 @@ set -e
 conf_mariadb_file()
 {
 	echo "Creating conf file "
-	cat << EOF > /etc/mysql/my.cnf
+	cat << EOF > /etc/mysql/inception_my.cnf
 	[mysqld]
 	user=mysql
 	datadir=${MYSQL_DIR}
@@ -23,7 +23,9 @@ init_database()
 	else 
 		echo "Database initialized "
 		mariadb-install_db --user=mysql --datadir=${MYSQL_DIR}
-		mysqld --datadir=${MYSQL_DIR} & 
+		mysqld --datadir=${MYSQL_DIR}  \
+			   --user=mysql \
+               --socket=/run/mysqld/mysqld.sock & 
 		
 		while ! mysqladmin ping --silent; do
 					echo "Waiting for database"
@@ -34,7 +36,7 @@ init_database()
 			mysql -u root -p"$db_root_password" < ${MYSQL_DIR}/init-db.sql 
 			mysqladmin shutdown -u root -p"$db_root_password"
 	fi
-	
+		rm -f "${MYSQL_DIR}/init-db.sql"
 		echo "Database Created!"
 }
 
@@ -71,7 +73,7 @@ EOF
 
 		echo "error init.sh: "
 		echo "$db_password_file or $db_root_password_file not found..."
-		exit 
+		exit 1
 	fi
 
 }

@@ -29,11 +29,6 @@ add_group()
 
 client_wp_download()
 {
-	volume=$1
-	echo "location"
-	pwd
-	echo "location end"
-	
 	if [ ! -f /usr/local/bin/wp ]; then
 		echo "Installing wp-cli"
 		curl -L -o wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
@@ -43,7 +38,7 @@ client_wp_download()
 		echo "wp-cli Instaled!"
 	fi
 }
-#mirar detalladament esto que hay una manera mejor de hacerlo
+
 configure_wp()
 {
 		php_version=$1
@@ -58,22 +53,21 @@ configure_wp()
 	
 	if ! wp core is-installed; then
 		echo "Creating Worpress tables"
-		wp core install --path=$volume     						\
-			--url="${DOMAIN_NAME}" 									\
+		wp core install --url="${DOMAIN_NAME}" 						\
 			--title="${WP_TITLE}"  									\
 			--admin_user="${WP_DB_ADMIN}"  							\
 			--admin_password="$(cat $admin_password_file)" 			\
 			--admin_email="${WP_DB_ADMIN}@dev.com"					\
-			--skip-email											\
-			--allow-root
+			--skip-email											
+#			--allow-root
 	fi 
 	if ! wp user get ${WP_DB_USER} --field=ID --quiet; then
 		echo "Creating ${WP_DB_USER} user"
 		wp user create --path=$volume								\
 			"${WP_DB_USER}" "${WP_DB_USER}@dev.com" 				\
 			--role=author 											\
-			--user_pass="$(cat $user_password_file)" 				\
-			--allow-root
+			--user_pass="$(cat $user_password_file)" 				
+#			--allow-root
 	fi
 	echo "Worpdress Configured!"
 
@@ -107,7 +101,7 @@ wp_download()
 init_wordpress()
 {
 		volume=/var/www/html
-	#	conneciting_db "mariadb" "${MARIA_DB_PORT}"
+		conneciting_db "mariadb" "${MARIADB_PORT}"
 		add_group "www-data" "www-data" "$volume"
 		wp_download "$volume"
 		client_wp_download "$volume"
@@ -117,7 +111,8 @@ init_wordpress()
 		exec php-fpm${PHP_VERSION} -F
 }
 
-if [ "$1" = "php${PHP_VERSION}" ] ; then
+#if [ "$1" = "php${PHP_VERSION}" ] ; then
+if [ "$1" = "php-fpm${PHP_VERSION}" ] ; then
 	echo  "entro al sh"	
 	init_wordpress
 else 
