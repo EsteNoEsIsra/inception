@@ -30,8 +30,8 @@ services:
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
-    args:
-      PHP_VERSION: ${PHP_VERSION}
+      args:
+       PHP_VERSION: ${PHP_VERSION}
     environment:
       - WP_DB=${MYSQL_DATABASE}
       - WP_TITLE=${WP_TITLE}
@@ -46,7 +46,6 @@ services:
     image: wordpress-image
     #restart: unless-stopped
     restart: no
-		
     depends_on:
       - mariadb
     networks:

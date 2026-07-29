@@ -32,5 +32,5 @@ COPY --chmod=755 /conf/init.sh /appWordpress/init.sh
 
 ENTRYPOINT ["/appWordpress/init.sh"]
 #EXPOSE ${WP_PORT}
-#CMD ["php84"]
-CMD ["php-fpm${PHP_VERSION}","-F"]
+CMD ["php"]
+#CMD ["sh", "-c", "php-fpm${PHP_VERSION} -F"]

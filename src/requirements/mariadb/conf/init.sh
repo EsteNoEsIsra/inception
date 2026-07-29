@@ -5,7 +5,7 @@ set -e
 conf_mariadb_file()
 {
 	echo "Creating conf file "
-	cat << EOF > /etc/mysql/inception_my.cnf
+	cat << EOF > /etc/mysql/mariadb.conf.d/98_inception.cnf
 	[mysqld]
 	user=mysql
 	datadir=${MYSQL_DIR}
@@ -18,11 +18,13 @@ EOF
 init_database()
 {
 	echo "Creating Database"
-	if [ -d "${MYSQL_DIR}/mysql" ] ; then 
+
+#	if [ -d "${MYSQL_DIR}/mysql" ] ; then 
+	if [ ! -f "${MYSQL_DIR}/ibdata1" ] ; then 
 		echo "Database exists"
 	else 
 		echo "Database initialized "
-		mariadb-install_db --user=mysql --datadir=${MYSQL_DIR}
+		mariadb-install-db --user=mysql --datadir=${MYSQL_DIR}
 		mysqld --datadir=${MYSQL_DIR}  \
 			   --user=mysql \
                --socket=/run/mysqld/mysqld.sock & 
@@ -36,7 +38,7 @@ init_database()
 			mysql -u root -p"$db_root_password" < ${MYSQL_DIR}/init-db.sql 
 			mysqladmin shutdown -u root -p"$db_root_password"
 	fi
-		rm -f "${MYSQL_DIR}/init-db.sql"
+#		rm -f "${MYSQL_DIR}/init-db.sql"
 		echo "Database Created!"
 }
 

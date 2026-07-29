@@ -12,7 +12,6 @@ if ($db_password === false)
 // {
 // 	$db_password = "root";
 // }
-'utf8mb4'
 $userdb = getenv('WP_DB_USER');
 $dbname = getenv('WP_DB');
 $hostname = getenv('WP_HOST');

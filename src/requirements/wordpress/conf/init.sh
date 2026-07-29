@@ -111,8 +111,8 @@ init_wordpress()
 		exec php-fpm${PHP_VERSION} -F
 }
 
-#if [ "$1" = "php${PHP_VERSION}" ] ; then
-if [ "$1" = "php-fpm${PHP_VERSION}" ] ; then
+#if [ "$1" = "php-fpm${PHP_VERSION}" ] ; then
+if [ "$1" = "php" ] ; then
 	echo  "entro al sh"	
 	init_wordpress
 else 
