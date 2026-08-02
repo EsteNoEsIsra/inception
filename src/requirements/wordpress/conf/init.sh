@@ -74,6 +74,36 @@ configure_wp()
 
 }
 
+download_redis()
+{
+	version=$1
+	volume_path=$2
+	
+	if [ ! -d "$volume_path/wp-content/plugins/redis-cache" ]; then
+		curl -L "https://downloads.wordpress.org/plugin/redis-cache.$version.zip" -o redis-cache.zip
+		unzip redis-cache.zip
+		rm redis-cache.zip
+		
+		mv redis-cache "$volume_path/wp-content/plugins/"
+		
+		chown -R www-data:www-data "$volume_path/wp-content/plugins/redis-cache"
+		
+		echo "Redis-cache plugin installed!"
+	else
+		echo "Redis-cache plugin already installed"
+	fi
+
+	if [ ! -f "$volume_path/wp-content/object-cache.php" ]; then
+		cp "$volume_path/wp-content/plugins/redis-cache/includes/object-cache.php" "$volume_path/wp-content/object-cache.php"
+		
+		chown www-data:www-data "$volume_path/wp-content/object-cache.php"
+		
+		echo "Object cache activated"
+	fi
+}
+
+
+
 configure_php()
 {
 	volume_path=$1
@@ -105,7 +135,7 @@ init_wordpress()
 		add_group "www-data" "www-data" "$volume"
 		wp_download "$volume"
 		client_wp_download "$volume"
-		#redis_dowlload
+		download_redis "2.5.0" "$volume"
 		configure_php "$volume"
 		configure_wp  "${PHP_VERSION}" "$volume"
 		exec php-fpm${PHP_VERSION} -F

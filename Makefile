@@ -7,7 +7,7 @@ USER = israetor
 #        SOURCES                                      
 
 MANDATORY_PATH = -f ./src/docker-compose.yml
-#BONUS_PATH = -f ./src/docker-compose_bonus.yml
+BONUS_PATH = -f ./src/docker-compose_bonus.yml
 #ELK_PATH = -f ./src/elk.yml
 ENV_SAMPLE = ./src/.env.sample
 

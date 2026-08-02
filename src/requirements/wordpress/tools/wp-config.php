@@ -77,13 +77,13 @@ define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
 */
 /**#@-*/
-/*
+
 //Redis Bonus
 define('WP_REDIS_HOST', 'redis');
 define('WP_REDIS_PORT', 6379);
 define('WP_CACHE', true);
 define('WP_REDIS_DISABLED', false);
-*/
+
 /**
  * WordPress database table prefix.
  *

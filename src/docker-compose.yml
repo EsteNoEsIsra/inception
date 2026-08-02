@@ -1,5 +1,4 @@
 
-
 services:
   mariadb:
     container_name: mariadb
@@ -7,8 +6,7 @@ services:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
     image: mariadb-image
- #   restart: unless-stopped
-    restart: no
+    restart: unless-stopped
     environment:
       - MYSQL_DIR=${MYSQL_DIR}
       - MARIADB_PORT=${MARIADB_PORT}
@@ -44,8 +42,7 @@ services:
       - WP_PREFIX=${WP_PREFIX}
       - MARIADB_PORT=${MARIADB_PORT}
     image: wordpress-image
-    #restart: unless-stopped
-    restart: no
+    restart: unless-stopped
     depends_on:
       - mariadb
     networks:
@@ -70,8 +67,7 @@ services:
       - NGINX_PORT=${NGINX_PORT}
       - DOMAIN_NAME=${DOMAIN_NAME}
     image: nginx-image
-    #restart: unless-stopped
-    restart: no
+    restart: unless-stopped
     ports:
       - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
