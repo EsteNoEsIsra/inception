@@ -40,8 +40,6 @@ services:
 			 context: ./requirements/bonus/vsftpd
        dockerfile: Dockerfile
 			image: vsftpd-image
-#			args:
-#					PHP_VERSION: ${PHP_VERSION}
 			environment:
         - VSFTPD_DATA_PORT=${VSFTPD_DATA_PORT}
 				- VSFTPD_PORT=${VSFTPD_PORT}
@@ -58,4 +56,13 @@ services:
  			 - "5000-5010:5000-5010"
 			volumes:
 				-wp:/home/${VSFTPD_USER}/ftp/files
-
+	website:
+  	container_name: website
+  	build: 
+			context: ./requirements/bonus/website
+			dockerfile: Dockerfile
+		image: website-image
+  	expose:
+    	- "80"
+  	networks:
+    - inception-network

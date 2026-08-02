@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42 - INCEPTION PROJECT CHEAT SHEET</title>
+    <style>
+        
+        :root {
+            --bg-color: #0c0f12;
+            --accent-color: #00babc; /* El mítico color turquesa de 42 */
+            --text-color: #a9b1d6;
+            --panel-bg: #1a1f29;
+            --border-color: #2c3545;
+            --cmd-bg: #05070a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        /* --- HEADER --- */
+        header {
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        header h1 {
+            color: #fff;
+            font-size: 2rem;
+            text-transform: uppercase;
+        }
+
+        header h1 span {
+            color: var(--accent-color);
+        }
+
+        header .project-badge {
+            background-color: var(--accent-color);
+            color: #000;
+            padding: 4px 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            border-radius: 3px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .panel.full-width {
+            grid-column: 1 / -1;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- COMANDOS --- */
+        code {
+            background-color: var(--cmd-bg);
+            color: #e0af68;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+
+        .cmd-block {
+            background-color: var(--cmd-bg);
+            padding: 12px;
+            border-left: 3px solid var(--accent-color);
+            border-radius: 0 4px 4px 0;
+            margin: 10px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .cmd-block code {
+            background: none;
+            color: #73daca;
+            padding: 0;
+            display: block;
+            white-space: pre;
+        }
+
+        .cmd-block::before {
+            content: "$ ";
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- LISTAS DE REQUISITOS --- */
+        ul {
+            list-style: none;
+            margin-left: 5px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        ul li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        /* --- INTERACTIVO: VALIDADOR DE REGLAS --- */
+        .checker-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: var(--bg-color);
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .checker-item label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .checker-item input[type="checkbox"] {
+            margin-right: 12px;
+            accent-color: var(--accent-color);
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .status-bar {
+            margin-top: 15px;
+            background-color: var(--cmd-bg);
+            height: 25px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress {
+            background-color: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-translate(-50%, -50%));
+            font-size: 0.8rem;
+            color: #fff;
+            font-weight: bold;
+            pointer-events: none;
+            width: 100%;
+            text-align: center;
+            line-height: 25px;
+        }
+
+        /* --- INTERACTIVO: VISUALIZADOR DE DOCKER-COMPOSE --- */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            background-color: var(--cmd-bg);
+            border-color: var(--accent-color) var(--accent-color) transparent var(--accent-color);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #file-viewer {
+            background-color: var(--cmd-bg);
+            padding: 15px;
+            border-radius: 0 4px 4px 4px;
+            border: 1px solid var(--border-color);
+            min-height: 220px;
+            overflow-x: auto;
+        }
+
+        #file-viewer pre {
+            color: #9ece6a;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #565f89;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>42Cursus: <span>Inception</span></h1>
+        <div class="project-badge">System Administration</div>
+    </header>
+
+    <div class="container">
+        
+        
+        <section class="panel">
+            <h2>Reglas de Oro del Subject</h2>
+            <ul>
+                <li><strong>Prohibido</strong> usar <code>network: host</code> o enlaces rápidos. Debes configurar una red propia (Tiers).</li>
+                <li><strong>Prohibido</strong> usar el comando <code>tail -f</code> para mantener vivos los contenedores en los entrypoints.</li>
+                <li>Todos los contenedores deben compilarse desde su propio <strong>Dockerfile</strong> hecho desde cero (Base: Alpine o Debian).</li>
+                <li><strong>Docker Compose</strong> debe estructurarse obligatoriamente en <code>srcs/docker-compose.yml</code>.</li>
+                <li>Volúmenes persistentes mapeados obligatoriamente a <code>/home/usuario/data/...</code>.</li>
+            </ul>
+        </section>
+
+      
+        <section class="panel">
+            <h2>Lista de Verificación pre-Evaluación</h2>
+            <div id="checker-list">
+                <div class="checker-item">
+                    <label><input type="checkbox" class="task-check"> ¿Los contenedores se reinician solos si fallan (restart: always)?</label>
+                </div>
+                <div class="checker-item">
+                    <label><input type="checkbox" class="task-check"> ¿Están las contraseñas ocultas en un archivo <code>.env</code>?</label>
+                </div>
+                <div class="checker-item">
+                    <label><input type="checkbox" class="task-check"> ¿Nginx sólo responde bajo el protocolo seguro <strong>TLS v1.2/v1.3</strong>?</label>
+                </div>
+                <div class="checker-item">
+                    <label><input type="checkbox" class="task-check"> ¿Tu dominio local está mapeado correctamente en <code>/etc/hosts</code>?</label>
+                </div>
+                <div class="checker-item">
+                    <label><input type="checkbox" class="task-check"> ¿Hiciste un <code>docker compose down -v</code> y los datos persisten?</label>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="progress" id="progress-bar"></div>
+                <div class="progress-text" id="progress-text">Listo para evaluar: 0%</div>
+            </div>
+        </section>
+
+      
+        <section class="panel">
+            <h2>Comandos Críticos de Depuración</h2>
+            <p>Construir y levantar todo el entorno en segundo plano:</p>
+            <div class="cmd-block"><code>docker compose -f srcs/docker-compose.yml up --build -d</code></div>
+            
+            <p>Verificar el estado de las redes creadas por ti:</p>
+            <div class="cmd-block"><code>docker network ls && docker network inspect [nombre]</code></div>
+            
+            <p>Entrar de forma interactiva a un contenedor para verificar paquetes:</p>
+            <div class="cmd-block"><code>docker exec -it nginx sh</code></div>
+
+            <p>Limpieza absoluta del sistema (útil para reiniciar en la evaluación):</p>
+            <div class="cmd-block"><code>docker system prune -a --volumes</code></div>
+        </section>
