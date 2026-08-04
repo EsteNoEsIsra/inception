@@ -11,8 +11,7 @@ configure_user()
     mkdir -p "$dir"
 
 	if ! getent passwd "$user"; then 
-		#adduser --disabled-password "$user"
-        useradd --disabled-password "$user"
+		adduser --disabled-password "$user"
 	fi 
  	echo "$user:$password" | /usr/sbin/chpasswd
  	echo "$user" >> $dir/vsftpd.userlist
@@ -47,14 +46,13 @@ start_templates()
 init_vsftpd()
 {
     #	pass=$(cat "$VSFTPD_PASS")
-	pass=$(cat "/run/secrets/db_root_password")
+	pass=$(cat "/run/secrets/ftp_password.txt")
 	configure_user "$VSFTPD_USER" "/etc/vsftpd" "$pass"
 	configure_folder "$VSFTPD_USER" "/home/$VSFTPD_USER/ftp"
 	start_templates "/vsftpd.cnf.template" "/etc/vsftpd/vsftpd.conf"
 	exec vsftpd /etc/vsftpd/vsftpd.conf
 }
 
-init_vsftpd $@
 
 if [ "$1" = "vsftpd" ]; then
 	init_vsftpd $@
