@@ -67,22 +67,14 @@ services:
       - ftp_password.txt
     networks:
       - inception-network
+    ports:
+      - "${VSFTPD_PORT}:21"
+      - "5000-5010:5000-5010"
     expose:
-      - "${VSFTPD_PORT}"
-      - "20"
-      - "5000"
-      - "5001"
-      - "5002"
-      - "5003"
-      - "5004"
-      - "5005"
-      - "5006"
-      - "5007"
-      - "5008"
-      - "5009"
-      - "5010"
+      - "5000-5010"
+      - "21"
     volumes:
-      - wp:/home/${VSFTPD_USER}/ftp/files
+      - wp-data:/home/${VSFTPD_USER}/ftp/files
 
   website:
     container_name: website
@@ -99,7 +91,7 @@ networks:
   inception_network:
 
 volumes:
-  wp:
+  wp-data:
 
 secrets:
   ftp_password.txt:

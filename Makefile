@@ -8,7 +8,6 @@ USER = israetor
 
 MANDATORY_PATH = -f ./src/docker-compose.yml
 BONUS_PATH = -f ./src/docker-compose_bonus.yml
-#ELK_PATH = -f ./src/elk.yml
 ENV_SAMPLE = ./src/.env.sample
 
 #         COLORS                                   
@@ -22,7 +21,7 @@ BLUE=\033[0;34m
 NC=\033[0m # NO COLOR
 
 
-all : help
+all : up
 
 up:	
 	@if [ ! -f src/.env ]; then \
@@ -59,7 +58,6 @@ clean:
 	@echo "$(RED)Stopping containers...$(NC)"
 	@$(COMPOSE) $(MANDATORY_PATH) down 2>/dev/null || true
 	@$(COMPOSE) $(MANDATORY_PATH) $(BONUS_PATH) down 2>/dev/null || true
-#	@$(COMPOSE) $(ELK_PATH) down 2>/dev/null || true
 	@printf "$(RED)Pruning containers and images...$(NC)\n"
 	@$(DOCKER) container prune -f
 	@$(DOCKER) image prune -a -f
