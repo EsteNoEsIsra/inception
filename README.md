@@ -440,8 +440,8 @@ For example:
 secrets/
 ├── db_password.txt
 ├── db_root_password.txt
-├── ftp_password.txt
-└── credentials.txt
+└── ftp_password.txt
+
 ```
 
 Docker mounts the required secrets inside the containers under:
